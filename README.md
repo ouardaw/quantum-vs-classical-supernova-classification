@@ -349,7 +349,7 @@ Senior Product Manager with hands-on experience in applied machine learning and 
 	•	Interests: quantum-classical hybrid systems, real-world applicability of emerging technologies, scientific computing
 
 Connect
-	•	GitHub: https://github.com/yourusername
+	•	GitHub: [https://github.com/yourusername](https://github.com/ouardaw/quantum-vs-classical-supernova-classification)
 	•	LinkedIn: https://www.linkedin.com/in/ouarda-jw/
 ## ⭐ Acknowledgments
 
