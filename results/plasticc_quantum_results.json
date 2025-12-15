@@ -1,0 +1,44 @@
+{
+  "model": "EstimatorQNN",
+  "features": [
+    "flux_std",
+    "max_slope",
+    "time_span"
+  ],
+  "num_qubits": 3,
+  "circuit_depth": 2,
+  "num_parameters": 27,
+  "trainable_params": 24,
+  "training_time_seconds": 243.81584119796753,
+  "optimizer": "COBYLA",
+  "max_iterations": 200,
+  "feature_map": {
+    "type": "ZZFeatureMap",
+    "reps": 2,
+    "entanglement": "full"
+  },
+  "ansatz": {
+    "type": "TwoLocal",
+    "reps": 3,
+    "rotation_blocks": [
+      "ry",
+      "rz"
+    ],
+    "entanglement_blocks": "cz",
+    "entanglement": "full"
+  },
+  "test_samples": 120,
+  "accuracy": 0.48333333333333334,
+  "auc": 0.4600000000000001,
+  "confusion_matrix": [
+    [
+      1,
+      59
+    ],
+    [
+      3,
+      57
+    ]
+  ],
+  "random_baseline_accuracy": 0.525
+}
