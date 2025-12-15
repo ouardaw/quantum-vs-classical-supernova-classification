@@ -329,6 +329,8 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
+create ../data/plasticc ,this is where features and  reults are saved
+
 Run notebooks in order:
 	1.	00_explore_plasticc.ipynb
 	2.	01_feature_extraction.ipynb
