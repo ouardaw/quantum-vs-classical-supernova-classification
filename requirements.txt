@@ -1,0 +1,36 @@
+# ----------------------------
+# Core scientific stack
+# ----------------------------
+numpy>=1.23
+pandas>=1.5
+scipy>=1.9
+
+# ----------------------------
+# Classical ML
+# ----------------------------
+scikit-learn>=1.2
+
+# Tree / boosting models
+catboost>=1.2
+
+# ----------------------------
+# Visualization
+# ----------------------------
+matplotlib>=3.7
+seaborn>=0.12
+
+# ----------------------------
+# Jupyter / notebooks
+# ----------------------------
+jupyterlab>=4.0
+ipykernel>=6.25
+
+# ----------------------------
+# Quantum stack (Qiskit 1.x)
+# ----------------------------
+qiskit>=1.0
+qiskit-machine-learning>=0.7
+qiskit-algorithms>=0.3
+
+# Required for circuit drawing
+pylatexenc>=2.10
