@@ -1,5 +1,9 @@
 
 
+Systematic Comparison of Classical vs Near-Term Quantum Machine Learning for Astronomical Classification
+
+⸻
+
 🌌 Why This Project Exists
 
 From Childhood Wonder to Strategic Quantum Exploration
@@ -10,37 +14,48 @@ One highlight was seeing Brian Cox’s live show on black holes in Washington, D
 
 A New Obsession Emerges
 
-In recent years, I became equally fascinated by quantum computing—not as a buzzword, but as a fundamentally new computational paradigm with real (but constrained) potential. After 10+ years in product management, I wanted to deepen my hands-on technical understanding of emerging technologies, not just their strategic implications.
+In recent years, I became equally fascinated by quantum computing—not as a buzzword, but as a fundamentally new computational paradigm with real (and very specific) potential. After more than 10 years in product management, I wanted to deepen my hands-on technical understanding of emerging technologies, not just their strategic implications.
 
 I completed IBM’s Basics of Quantum Information certification, strengthened my machine-learning foundations, and decided to combine these skills with my lifelong interest in astrophysics.
 
 The Real-World Context
 
-Modern astronomical surveys generate data at extraordinary scale:
+Modern astronomical surveys operate at extreme scale:
 	•	Zwicky Transient Facility (ZTF): ~10,000 alerts per night
 	•	ALeRCE & ANTARES: Production ML systems using Random Forests, gradient boosting, and deep learning
 	•	Vera Rubin Observatory (LSST): Expected to generate ~10 million alerts per night
-	•	PLAsTiCC Challenge: Designed by LSST scientists to benchmark ML approaches for this scale
+	•	PLAsTiCC Challenge: Created by LSST scientists to benchmark ML approaches at this scale
 
-Classical ML already works extremely well here. This project does not attempt to outperform professional astronomy pipelines.
+Classical ML already works extremely well here.
+This project does not attempt to outperform professional astronomy pipelines.
 
-The Research Question
+⸻
+
+❓ The Research Question
 
 Instead, I asked a more fundamental question:
 
 Given that classical ML works well for astronomical transient classification, what would it take for quantum ML to be competitive?
 
-This is a technology-fit evaluation, not an astronomy optimization task. I used real PLAsTiCC data as a realistic testbed to understand where near-term quantum ML helps — and where it does not.
+This is a technology-fit evaluation, not an astronomy optimization task.
+I used real PLAsTiCC data as a realistic testbed to understand where near-term quantum ML helps — and where it does not.
 
 ⸻
 
 🧪 Methodology Overview
 
 I implemented parallel, production-quality pipelines:
-	•	Classical ML: Logistic Regression, Random Forest, CatBoost, and a soft-voting ensemble
-	•	Quantum ML: A 3-qubit variational quantum classifier (EstimatorQNN, Qiskit)
+	•	Classical ML
+	•	Logistic Regression
+	•	Random Forest
+	•	CatBoost
+	•	Soft-voting ensemble
+	•	Quantum ML
+	•	3-qubit variational quantum classifier
+	•	Qiskit EstimatorQNN
+	•	COBYLA optimizer
 
-Both approaches were trained and evaluated on the same dataset, with consistent splits and metrics.
+Both approaches were trained and evaluated on the same dataset, using consistent splits and metrics.
 
 ⸻
 
@@ -73,9 +88,52 @@ The quantum model learned a strong bias toward predicting SNIa rather than a bal
 
 ⸻
 
-🔍 Root Cause Analysis: Feature Quality
+🔬 Experimental Iteration & Model Diagnostics
 
-Feature correlation and class-separation analysis revealed the key limitation:
+<details>
+<summary><b>Systematic experimentation, diagnostics, and limits analysis (click to expand)</b></summary>
+
+
+This project evolved through controlled, hypothesis-driven iterations to understand how near-term quantum ML behaves on real scientific data.
+
+Initial Baseline (600 samples)
+	•	Classical: ~75.0% accuracy
+	•	Quantum: ~47.5% accuracy
+	•	Gap: −27.5 pp
+
+Improvements Applied
+	•	Dataset scaling: 600 → 1,072 samples
+	•	Auto-selection of top 3 features via correlation analysis
+	•	Outlier-robust preprocessing (clipping + log transforms)
+	•	Quantum-specific scaling to [0, \pi]
+	•	Deeper circuit and more training iterations
+
+Final Outcome (1,072 samples)
+	•	Quantum accuracy improved slightly to ~50.2%
+	•	Classical performance remained stable
+	•	Performance plateaued despite tuning
+
+Why Performance Plateaued
+
+Feature analysis revealed a fundamental data limitation:
+
+Feature	Separation (σ)
+Best features	0.31–0.46σ
+Typical requirement for quantum ML	>0.5σ
+
+No amount of circuit depth or optimizer tuning can compensate for insufficient feature separability.
+
+Key takeaway:
+
+Quantum ML performance is primarily constrained by feature quality, not model complexity or dataset size alone.
+
+</details>
+
+
+
+⸻
+
+🔍 Root Cause Analysis: Feature Quality
 
 Feature	Correlation	Separation (σ)
 time_span	0.280	0.46
@@ -83,11 +141,8 @@ decline_time	0.269	0.44
 mag_max	0.151	0.31
 rise_decline_ratio	0.017	0.03
 
-Effective quantum learning typically requires:
-
-> 0.5σ separation per encoded feature
-
-This dataset provides 0.03–0.46σ, which explains why performance hovers near random despite careful preprocessing and tuning.
+Effective quantum learning typically requires >0.5σ separation per encoded feature.
+This dataset provides 0.03–0.46σ, explaining the observed performance ceiling.
 
 ⸻
 
@@ -95,15 +150,15 @@ This dataset provides 0.03–0.46σ, which explains why performance hovers near 
 
 Classical ensemble methods succeed because they:
 	•	Combine many weak signals across 16 dimensions
-	•	Use flexible, non-linear decision boundaries
+	•	Learn flexible, non-linear decision boundaries
 	•	Compensate for poor individual features via ensemble voting
 
-Quantum ML struggled because:
-	•	It is constrained to 3 features (3 qubits)
-	•	Each feature must carry meaningful signal
-	•	Weak gradients and feature overlap limit learning capacity
+Quantum ML struggled because it:
+	•	Is constrained to 3 features (3 qubits)
+	•	Requires strong individual feature signal
+	•	Suffers from weak gradients when features overlap
 
-This is not a failure of quantum computing — it’s a problem–tool mismatch.
+This is not a failure of quantum computing — it is a problem–tool mismatch.
 
 ⸻
 
@@ -112,15 +167,15 @@ This is not a failure of quantum computing — it’s a problem–tool mismatch.
 Quantum ML is not universally superior to classical ML.
 Knowing when not to use it is just as important as knowing how to implement it.
 
-Quantum methods are most promising when:
+Quantum ML is most promising when:
 	•	Feature separation is strong (>1σ)
 	•	Datasets are large (10k+ samples)
-	•	The problem structure is quantum-native or high-dimensional in a way classical methods struggle with
+	•	Problem structure is quantum-native
 
-Classical ML remains optimal for:
-	•	Small to mid-sized datasets
-	•	Weakly separable features
-	•	Mature, well-understood domains (like astronomical transient classification)
+Classical ML remains optimal when:
+	•	Datasets are small to mid-sized
+	•	Features are weakly separable
+	•	The domain is mature and well-understood
 
 ⸻
 
@@ -128,7 +183,9 @@ Classical ML remains optimal for:
 
 quantum-transient-detector_Real_Data/
 ├── data/
-│   └── plasticc/                 # User-created directory for PLAsTiCC data & derived artifacts
+│   └── plasticc/                 # User-created directory
+│                                # Place raw PLAsTiCC data here
+│                                # Engineered features are also saved here
 ├── notebooks/
 │   ├── 00_explore_plasticc.ipynb
 │   ├── 01_feature_extraction.ipynb
@@ -152,6 +209,7 @@ To run the notebooks:
 	1.	Create a Kaggle account
 	2.	Accept the PLAsTiCC-2018 competition terms
 	3.	Download the dataset from Kaggle
+	4.	Create data/plasticc/ and place the files there
 
 This repository fully complies with Kaggle’s data-usage requirements.
 
