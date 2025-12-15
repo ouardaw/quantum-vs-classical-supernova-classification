@@ -1,298 +1,134 @@
-# Quantum Transient Detector
 
 
-## 🌌 Why This Project Exists
+🌌 Why This Project Exists
 
+From Childhood Wonder to Strategic Quantum Exploration
 
-**From Childhood Wonder to Strategic Quantum Exploration**
+My fascination with the cosmos began early—sparked by Hubert Reeves’ Poussière d’Étoiles and Carl Sagan’s Cosmos. Over the years, I pursued this curiosity relentlessly: reading about quantum field theory, many-worlds interpretation, black holes, dark matter, and M-theory; watching countless space documentaries; and learning from science communicators like Neil deGrasse Tyson, Janna Levin, Sean Carroll, and Brian Cox.
 
-My fascination with the cosmos began early—sparked by Hubert Reeves' *Poussière d'Étoiles* and Carl Sagan's *Cosmos*. Over the years, I've pursued this passion relentlessly: reading everything from quantum field theory and many-worlds interpretation to books on black holes, dark matter, and M-theory; watching countless documentaries; and learning from brilliant science communicators like Neil deGrasse Tyson, Janna Levin, Sean Carroll, and Brian Cox.
+One highlight was seeing Brian Cox’s live show on black holes in Washington, DC—an unforgettable experience that reinforced how powerful scientific storytelling can be.
 
-(One highlight: seeing Brian Cox's live show on black holes in Washington DC—witnessing physics presented with that kind of passion is unforgettable.)
+A New Obsession Emerges
 
-**A New Obsession Emerges:**
+In recent years, I became equally fascinated by quantum computing—not as a buzzword, but as a fundamentally new computational paradigm with real (but constrained) potential. After 10+ years in product management, I wanted to deepen my hands-on technical understanding of emerging technologies, not just their strategic implications.
 
-In recent years, I became equally fascinated by quantum computing—not as a buzzword, but as a genuinely revolutionary technology with the potential to transform certain computational problems. After 10+ years in product management, I wanted to develop hands-on technical expertise alongside strategic understanding.
+I completed IBM’s Basics of Quantum Information certification, strengthened my machine-learning foundations, and decided to combine these skills with my lifelong interest in astrophysics.
 
-So I completed IBM's Basics of Quantum Information certification, deepened my ML knowledge, and decided to combine these new skills with my lifelong passion for astrophysics.
+The Real-World Context
 
-**The Real-World Context:**
+Modern astronomical surveys generate data at extraordinary scale:
+	•	Zwicky Transient Facility (ZTF): ~10,000 alerts per night
+	•	ALeRCE & ANTARES: Production ML systems using Random Forests, gradient boosting, and deep learning
+	•	Vera Rubin Observatory (LSST): Expected to generate ~10 million alerts per night
+	•	PLAsTiCC Challenge: Designed by LSST scientists to benchmark ML approaches for this scale
 
-Modern astronomical surveys generate unprecedented data volumes requiring sophisticated automated classification:
+Classical ML already works extremely well here. This project does not attempt to outperform professional astronomy pipelines.
 
-- **Zwicky Transient Facility (ZTF):** Currently produces ~10,000 transient alerts per night
-- **ALeRCE & ANTARES:** Production ML systems (Random Forests, gradient boosting, deep learning) that classify these alerts in real-time
-- **Vera Rubin Observatory (LSST):** Beginning operations in 2025, will generate **10 million alerts per night**
-- **PLAsTiCC Challenge:** Created by LSST scientists specifically to develop ML algorithms for this scale
+The Research Question
 
-Astronomers have developed highly effective classical ML pipelines for these workflows. These systems work well—discovering thousands of supernovae, transient events, and astronomical phenomena.
+Instead, I asked a more fundamental question:
 
-**My Research Question:**
+Given that classical ML works well for astronomical transient classification, what would it take for quantum ML to be competitive?
 
-My goal was **NOT** to build a better astronomical classifier than existing systems—professional astronomers with domain expertise and computational resources have already solved that problem effectively.
+This is a technology-fit evaluation, not an astronomy optimization task. I used real PLAsTiCC data as a realistic testbed to understand where near-term quantum ML helps — and where it does not.
 
-Instead, I wanted to conduct a **systematic comparative study**: Given that classical ML works well for astronomical transient classification, what would it take for quantum ML to be competitive? What problem characteristics make quantum approaches advantageous versus where classical methods remain optimal?
+⸻
 
-This is fundamentally a **technology evaluation question**, not an astronomy optimization problem. I used real astronomical data (PLAsTiCC) as a concrete, realistic testbed to understand quantum ML's applicability.
+🧪 Methodology Overview
 
-**The Approach:**
+I implemented parallel, production-quality pipelines:
+	•	Classical ML: Logistic Regression, Random Forest, CatBoost, and a soft-voting ensemble
+	•	Quantum ML: A 3-qubit variational quantum classifier (EstimatorQNN, Qiskit)
 
-I built rigorous implementations of both approaches:
-- **Classical:** Ensemble of Logistic Regression, Random Forest, and CatBoost (similar architecture to production systems like ALeRCE)
-- **Quantum:** 3-qubit variational quantum classifier using Qiskit EstimatorQNN
+Both approaches were trained and evaluated on the same dataset, with consistent splits and metrics.
 
-Both trained on identical data (1,072 PLAsTiCC supernovae) with proper evaluation methodology.
+⸻
 
-**The Finding:**
+📊 Results Summary (Updated)
 
-Classical ensemble methods achieved 74.4% accuracy (AUC 0.852) while quantum ML reached 52.1% accuracy (AUC 0.587)—indicating classical approaches were the more appropriate choice for this problem.
+Dataset: 1,072 PLAsTiCC transients
+	•	523 Type Ia (SNIa)
+	•	549 Type II (SNII)
 
-Through comprehensive feature analysis, I identified the root cause: available features showed 0.03-0.46σ class separation, below the >0.5σ threshold where quantum ML's unique properties (superposition, entanglement, quantum parallelism) can provide computational advantages.
+Approach	Model	Features	Accuracy	AUC	Training Time
+Classical	Ensemble (LR + RF + CatBoost)	16	74.4%	0.852	~2 min
+Quantum	3-qubit EstimatorQNN	3	50.2%	0.576	~10–11 min
+Baseline	Random guessing	–	50.0%	0.500	–
 
-**The Strategic Insight:**
+Classical Performance
+	•	Random Forest: 75.8% accuracy
+	•	CatBoost: 74.4% accuracy
+	•	Logistic Regression: 71.2% accuracy
+	•	Ensemble: 74.4% accuracy, best AUC
 
-This result isn't a limitation of quantum computing—it's a **problem-tool matching finding**. 
+Quantum Performance
+	•	Accuracy: 50.2%
+	•	AUC: 0.576
+	•	Sensitivity (SNIa recall): 87.6%
+	•	Specificity (SNII recall): 14.5%
+	•	Balanced accuracy: 51.1%
 
-Quantum computing excels at specific problem types:
-- Quantum simulation (molecular dynamics, materials science)
-- Certain optimization problems with quantum-natural structure
-- High-dimensional problems with strong feature correlations
-- Problems where quantum superposition provides genuine parallelism advantages
+Interpretation:
+The quantum model learned a strong bias toward predicting SNIa rather than a balanced discriminative boundary — a clear symptom of weak feature separability under tight qubit constraints.
 
-Small astronomical classification datasets with weakly-separable features are better served by classical ensemble methods, which compensate for weak signals through high-dimensional feature combination—exactly what production systems like ALeRCE do successfully.
+⸻
 
-**The Valuable Learning:**
+🔍 Root Cause Analysis: Feature Quality
 
-This project taught me something more important than any single benchmark: **how to evaluate which problems are good quantum candidates**. 
+Feature correlation and class-separation analysis revealed the key limitation:
 
-This assessment capability—knowing not just *how* to implement quantum algorithms but *when* they're the appropriate solution—is critical for organizations navigating quantum technology investments. Not every problem needs quantum computing, but the right problems can benefit tremendously.
+Feature	Correlation	Separation (σ)
+time_span	0.280	0.46
+decline_time	0.269	0.44
+mag_max	0.151	0.31
+rise_decline_ratio	0.017	0.03
 
-**Looking Forward:**
+Effective quantum learning typically requires:
 
-My goal is to continue exploring quantum computing applications, specifically targeting problems where quantum's unique properties provide genuine computational advantages. 
+> 0.5σ separation per encoded feature
 
-Rather than forcing quantum onto problems already solved effectively by classical methods, I'm focused on identifying new problem classes where quantum computing can make transformational impact.
+This dataset provides 0.03–0.46σ, which explains why performance hovers near random despite careful preprocessing and tuning.
 
-This project represents the convergence of:
-- Childhood wonder (*Poussière d'Étoiles*, Carl Sagan, the cosmos)
-- Professional product expertise (10+ years strategic PM)
-- Newly acquired technical depth (quantum computing, ML)
-- Scientific methodology (rigorous comparative analysis)
+⸻
 
-Sometimes the best learning comes from discovering when a powerful tool *isn't* the right fit—because then you know exactly what problems to look for where it *is*. 🌌⚛️
+⚛️ Why Classical Outperformed Quantum Here
 
----
+Classical ensemble methods succeed because they:
+	•	Combine many weak signals across 16 dimensions
+	•	Use flexible, non-linear decision boundaries
+	•	Compensate for poor individual features via ensemble voting
 
-**Systematic Comparison: Classical vs Near-Term Quantum Machine Learning for Astronomical Classification**
+Quantum ML struggled because:
+	•	It is constrained to 3 features (3 qubits)
+	•	Each feature must carry meaningful signal
+	•	Weak gradients and feature overlap limit learning capacity
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![Qiskit](https://img.shields.io/badge/Qiskit-1.x-purple.svg)](https://qiskit.org/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-orange.svg)](https://scikit-learn.org/)
+This is not a failure of quantum computing — it’s a problem–tool mismatch.
 
-An end-to-end, empirical comparison of classical ensemble methods and near-term quantum machine learning for binary supernova classification (Type Ia vs Type II) using real astronomical data from the PLAsTiCC challenge.
+⸻
 
-> **Key Finding:**  
-> In this setting, classical models significantly outperform quantum ML (74.4% vs 52.1%) due to weak feature separability (0.03–0.46σ). This demonstrates that quantum ML requires high-quality features with strong class separation, not just adequate data volume.
+💡 Strategic Insight
 
----
+Quantum ML is not universally superior to classical ML.
+Knowing when not to use it is just as important as knowing how to implement it.
 
-## 📊 Results Summary
+Quantum methods are most promising when:
+	•	Feature separation is strong (>1σ)
+	•	Datasets are large (10k+ samples)
+	•	The problem structure is quantum-native or high-dimensional in a way classical methods struggle with
 
-**Dataset:** 1,072 PLAsTiCC transients (523 SNIa, 549 SNII)
+Classical ML remains optimal for:
+	•	Small to mid-sized datasets
+	•	Weakly separable features
+	•	Mature, well-understood domains (like astronomical transient classification)
 
-| Approach | Model | Features | Accuracy | AUC | Training Time |
-|--------|------|----------|----------|-----|---------------|
-| **Classical** | Ensemble (LR + RF + CatBoost) | 16 | **74.4%** | **85.2%** | ~2 min |
-| **Quantum** | 3-qubit EstimatorQNN | 3 | **52.1%** | **58.7%** | ~10 min |
-| Baseline | Random guessing | – | 50.0% | 50.0% | – |
+⸻
 
-**Classical Performance by Model**
-- Random Forest: 75.8% accuracy  
-- CatBoost: 74.4% accuracy  
-- Logistic Regression: 71.2% accuracy  
-- Ensemble: 74.4% accuracy, **85.2% AUC**
+📂 Project Structure
 
-**Quantum Performance**
-- Balanced accuracy: 52.9%  
-- Sensitivity (SNIa recall): 85.7%  
-- Specificity (SNII recall): 20.0%  
-- **Interpretation:** The model learned a strong bias toward predicting SNIa rather than robust discriminative patterns.
-
----
-
-## 🎯 Motivation
-
-### Why This Project Matters
-
-Time-domain astronomical surveys such as the Vera Rubin Observatory (LSST) will generate millions of transient alerts per night. Automated classification is essential for prioritizing follow-up observations and extracting scientific value at scale.
-
-### The Quantum Computing Question
-
-Quantum machine learning is frequently proposed as a solution for complex classification tasks — but **when does it actually help?**
-
-This project provides a concrete, data-driven answer using:
-- real scientific data  
-- production-grade classical baselines  
-- realistic NISQ-era quantum constraints  
-
-### Objectives
-1. Build a strong classical ensemble baseline  
-2. Implement a comparable quantum ML pipeline  
-3. Systematically evaluate performance and limitations  
-4. Identify when quantum approaches are appropriate vs when classical methods are preferable  
-
----
-
-## 📁 Dataset
-
-**Source:** [PLAsTiCC Challenge](https://www.kaggle.com/c/PLAsTiCC-2018)  
-(Photometric LSST Astronomical Time-Series Classification Challenge)
-
-**Task:** Binary classification
-- **Type Ia (SNIa):** Thermonuclear supernovae
-- **Type II (SNII):** Core-collapse supernovae
-
-**Data Characteristics**
-- Full dataset: 7,848 objects, hundreds of millions of observations  
-- Subset used: 1,072 objects (balanced)  
-- ~115k multi-band photometric observations  
-- Time coverage: ~750–1,100 days  
-- Bands: ugrizy  
-- Irregular cadence with realistic observational gaps  
-
----
-
-## 🔧 Feature Engineering
-
-**16 features extracted from raw light curves**
-
-### Magnitude Features (5)
-- `mag_min`, `mag_max`, `mag_mean`, `mag_std`, `mag_range`  
-- Computed as: `mag = -2.5 × log10(flux)`
-
-### Flux Features (3)
-- `flux_max`, `flux_mean`, `flux_std`
-
-### Temporal Features (4)
-- `time_span`
-- `rise_time`
-- `decline_time`
-- `rise_decline_ratio`
-
-### Slope Features (3)
-- `mean_rise_slope`
-- `mean_decline_slope`
-- `max_slope`
-
-### Metadata
-- `n_points`
-
-**Data Quality Filters**
-- Removed undetected observations (`detected = 0`)
-- Filtered non-positive flux values
-- Minimum 5 observations per object
-- Removed edge-peaked light curves
-- Outlier clipping at 1st / 99th percentiles
-
----
-
-## 🤖 Classical ML Pipeline
-
-### Models
-1. **Logistic Regression**
-   - L2 regularization (C=2.0)
-   - StandardScaler
-2. **Random Forest**
-   - 600 trees, max depth 20
-3. **CatBoost**
-   - 800 iterations, depth 8
-   - Learning rate 0.05
-4. **Soft Voting Ensemble**
-   - Weights: [1, 2, 3]
-   - Best AUC performance
-
-### Training
-- Train/Test split: 80/20 (stratified)
-- Random seed: 42
-- Metrics: Accuracy, AUC, confusion matrix
-
----
-
-## ⚛️ Quantum ML Pipeline
-
-> **Note:** The quantum model is intentionally constrained to 3 qubits to reflect realistic NISQ-era limitations rather than idealized large-scale quantum systems.
-
-### Circuit Architecture
-Feature Map: ZZFeatureMap
-	•	3 features
-	•	2 repetitions
-	•	Full entanglement
-
-Variational Ansatz: TwoLocal
-	•	3 qubits
-	•	3 repetitions
-	•	RY / RZ rotations
-	•	CZ entanglement
-
-Total parameters: 27
-### Feature Selection
-Selected via point-biserial correlation:
-1. `time_span` (0.280)
-2. `decline_time` (0.269)
-3. `mag_max` (0.151)
-
-### Preprocessing
-- Outlier clipping
-- Log transforms for high dynamic range
-- Min-max scaling to [0, π] for angle encoding
-
-### Training
-- Optimizer: COBYLA
-- Max iterations: 300
-- Backend: Statevector Estimator (noiseless)
-- Training time: ~10 minutes
-
----
-
-## 🔍 Critical Finding: Feature Quality Limits Performance
-
-| Feature | Correlation | Separation (σ) |
-|-------|------------|----------------|
-| time_span | 0.280 | 0.46 |
-| decline_time | 0.269 | 0.44 |
-| mag_max | 0.151 | 0.31 |
-| rise_decline_ratio | **0.017** | **0.03** |
-
-**Required for effective learning:** >0.5σ  
-**Available:** 0.03–0.46σ
-
-### Why Classical Outperforms Quantum
-- Classical ensembles combine many weak signals across 16 dimensions
-- Tree-based models form flexible non-linear boundaries
-- Quantum models depend on strong individual feature signal due to qubit limits
-
-### Key Insight
-> **Quantum ML is not universally superior to classical ML.**  
-> Understanding *when not to use quantum methods* is a critical practical skill.
-
----
-
-## 💡 When to Use Quantum vs Classical ML
-
-### Quantum ML is Promising When
-- Large datasets (10k+ samples)
-- Strong feature separation (>1σ)
-- Quantum-native problem structure
-
-### Classical ML is Preferable When
-- Small to mid-sized datasets
-- Weak individual features
-- Well-understood domains
-
----
-
-## 📂 Project Structure
 quantum-transient-detector_Real_Data/
+├── data/
+│   └── plasticc/                 # User-created directory for PLAsTiCC data & derived artifacts
 ├── notebooks/
 │   ├── 00_explore_plasticc.ipynb
 │   ├── 01_feature_extraction.ipynb
@@ -300,70 +136,50 @@ quantum-transient-detector_Real_Data/
 │   └── 03_quantum_classifier.ipynb
 ├── results/
 │   ├── plasticc_classical_results.json
-│   └── plasticc_quantum_results.json
+│   └── plasticc_quantum_results_final.json
 ├── README.md
 ├── requirements.txt
-├── .gitignore
 └── LICENSE
 
----
 
-## 🚀 Setup & Installation
+⸻
 
-### Data Access (Required)
+🚀 Setup & Data Access
 
-PLAsTiCC data **is not included** in this repository.
+PLAsTiCC data is not included.
 
-To access the dataset:
-1. Create a Kaggle account
-2. Accept the PLAsTiCC-2018 competition terms
-3. Download the data directly from Kaggle
+To run the notebooks:
+	1.	Create a Kaggle account
+	2.	Accept the PLAsTiCC-2018 competition terms
+	3.	Download the dataset from Kaggle
 
-This repository complies fully with Kaggle’s data usage requirements.
+This repository fully complies with Kaggle’s data-usage requirements.
 
-### Installation
-```bash
-git clone https://github.com/yourusername/quantum-transient-detector.git
-cd quantum-transient-detector
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-create ../data/plasticc ,this is where features and  reults are saved
-
-Run notebooks in order:
-	1.	00_explore_plasticc.ipynb
-	2.	01_feature_extraction.ipynb
-	3.	02_classical_ml.ipynb
-	4.	03_quantum_classifier.ipynb
-
-📝 License
-
-MIT License — see LICENSE file for details.
+⸻
 
 👤 Author
 
 Ouarda Wilson
-Senior Product Manager with hands-on experience in applied machine learning and quantum computing
-	•	10+ years leading and shipping complex technical products
-	•	Background in AI/ML systems, data-driven decision making, and SaaS
-	•	Practical experience with quantum computing through Qiskit and quantum ML experimentation
-	•	Interests: quantum-classical hybrid systems, real-world applicability of emerging technologies, scientific computing
+Senior Product Manager with hands-on experience in applied ML and quantum computing
+	•	10+ years delivering complex technical products
+	•	Background in AI/ML systems and data-driven decision making
+	•	Practical quantum computing experience with Qiskit
+	•	Interests: quantum-classical hybrids, real-world applicability of emerging tech, scientific computing
 
-Connect
-	•	GitHub: https://github.com/ouardaw/quantum-vs-classical-supernova-classification
-	•	LinkedIn: https://www.linkedin.com/in/ouarda-jw/
-## ⭐ Acknowledgments
+🔗 GitHub: https://github.com/ouardaw/quantum-vs-classical-supernova-classification
+🔗 LinkedIn: https://www.linkedin.com/in/ouarda-jw/
 
-- **IBM Quantum** — Qiskit framework, documentation, and educational resources  
-- **Anthropic & OpenAI** — AI assistance used for reasoning support, code review, and documentation refinement  
-- **PLAsTiCC Organizers** — Creation and curation of the astronomical dataset  
-- **Kaggle** — Competition hosting and data infrastructure  
-- **Kaggle Community** — Baseline solutions and shared insights  
+⸻
 
----
+⭐ Acknowledgments
+	•	IBM Quantum — Qiskit framework and educational resources
+	•	Anthropic & OpenAI — AI assistance for reasoning support, code review, and documentation
+	•	PLAsTiCC Organizers — Dataset creation
+	•	Kaggle — Hosting and infrastructure
+	•	Kaggle Community — Baselines and shared insights
 
-*Built with quantum circuits, classical determination, and thoughtful AI assistance* ⚛️🔭
+⸻
 
----
+Built with quantum curiosity, classical rigor, and thoughtful AI assistance ⚛️🔭
 
+⸻
