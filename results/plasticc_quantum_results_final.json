@@ -1,0 +1,76 @@
+{
+  "dataset_size": 1072,
+  "train_size": 857,
+  "test_size": 215,
+  "model": "EstimatorQNN",
+  "features_selected_auto": [
+    "time_span",
+    "decline_time",
+    "mag_max"
+  ],
+  "feature_selection_method": "top3_by_abs_pointbiserial_correlation",
+  "preprocessing": {
+    "outlier_clipping": "1st/99th percentile",
+    "clip_bounds": {
+      "time_span": {
+        "p1": 16.848031999998057,
+        "p99": 398.53511299999445
+      },
+      "decline_time": {
+        "p1": 3.0397129999987373,
+        "p99": 384.16661299999805
+      },
+      "mag_max": {
+        "p1": -5.906586465235463,
+        "p99": -1.0485425653444551
+      }
+    },
+    "log_transformed_features": [
+      "decline_time"
+    ],
+    "angle_scaling": "[0, pi] via MinMaxScaler"
+  },
+  "circuit": {
+    "qubits": 3,
+    "feature_map": {
+      "type": "ZZFeatureMap",
+      "reps": 2,
+      "entanglement": "full"
+    },
+    "ansatz": {
+      "type": "TwoLocal",
+      "reps": 3,
+      "rotations": [
+        "ry",
+        "rz"
+      ],
+      "entanglement_gate": "cz",
+      "entanglement": "full"
+    },
+    "depth": 2,
+    "total_params": 27,
+    "trainable_params": 24
+  },
+  "optimizer": {
+    "type": "COBYLA",
+    "maxiter": 300
+  },
+  "training_time_seconds": 641.9895601272583,
+  "metrics": {
+    "accuracy": 0.5023255813953489,
+    "auc": 0.5758441558441558,
+    "balanced_accuracy": 0.5108225108225108,
+    "sensitivity_snia": 0.8761904761904762,
+    "specificity_snii": 0.14545454545454545,
+    "confusion_matrix": [
+      [
+        16,
+        94
+      ],
+      [
+        13,
+        92
+      ]
+    ]
+  }
+}
