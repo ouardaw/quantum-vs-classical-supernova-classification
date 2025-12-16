@@ -1,0 +1,10 @@
+{
+  "top_3_features": [
+    "time_span",
+    "decline_time",
+    "mag_max"
+  ],
+  "method": "top3_by_abs_pointbiserial_correlation_train_only",
+  "random_state": 42,
+  "test_size": 0.2
+}

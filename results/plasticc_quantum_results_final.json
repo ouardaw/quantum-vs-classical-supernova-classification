@@ -1,0 +1,106 @@
+{
+  "dataset_size": 1072,
+  "train_size": 857,
+  "test_size": 215,
+  "model": "EstimatorQNN",
+  "features_selected_auto": [
+    "time_span",
+    "decline_time",
+    "mag_max"
+  ],
+  "feature_selection_method": "top3_by_abs_pointbiserial_correlation_on_train_only",
+  "preprocessing": {
+    "order": "split -> select_features(train) -> fit_preproc(train) -> apply(test)",
+    "outlier_clipping": "1st/99th percentile (fit on TRAIN)",
+    "clip_bounds": {
+      "time_span": {
+        "p1": 17.057540000000735,
+        "p99": 393.23860800000153
+      },
+      "decline_time": {
+        "p1": 3.960199999996403,
+        "p99": 377.75288799999987
+      },
+      "mag_max": {
+        "p1": -5.850891974121627,
+        "p99": -1.048035375948721
+      }
+    },
+    "log_transformed_features": [],
+    "log_shifts_train": {},
+    "angle_scaling": "[0, pi] via MinMaxScaler (fit on TRAIN)"
+  },
+  "circuit": {
+    "qubits": 3,
+    "feature_map": {
+      "type": "ZZFeatureMap",
+      "reps": 2,
+      "entanglement": "full"
+    },
+    "ansatz": {
+      "type": "TwoLocal",
+      "reps": 3,
+      "rotations": [
+        "ry",
+        "rz"
+      ],
+      "entanglement_gate": "cz",
+      "entanglement": "full"
+    },
+    "depth_raw": 2,
+    "depth_decomposed": 39,
+    "total_params": 27,
+    "trainable_params": 24,
+    "ops": {
+      "ZZFeatureMap": 1,
+      "TwoLocal": 1
+    }
+  },
+  "optimizer": {
+    "type": "COBYLA",
+    "maxiter": 300
+  },
+  "training_time_seconds": 458.09303617477417,
+  "inference": {
+    "thresholding": "train-optimized",
+    "threshold_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.39999999999999997,
+      0.44999999999999996,
+      0.49999999999999994,
+      0.5499999999999999,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.7999999999999999,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "chosen_threshold": 0.39999999999999997
+  },
+  "metrics": {
+    "accuracy": 0.5534883720930233,
+    "auc": 0.5815584415584415,
+    "balanced_accuracy": 0.55,
+    "sensitivity_snia": 0.4,
+    "specificity_snii": 0.7,
+    "confusion_matrix": [
+      [
+        77,
+        33
+      ],
+      [
+        63,
+        42
+      ]
+    ]
+  }
+}

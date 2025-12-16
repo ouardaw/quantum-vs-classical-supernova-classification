@@ -1,0 +1,118 @@
+{
+  "dataset_size": 1072,
+  "train_size": 857,
+  "test_size": 215,
+  "features_selected_auto": [
+    "time_span",
+    "decline_time",
+    "mag_max"
+  ],
+  "feature_selection_method": "top3_by_abs_pointbiserial_correlation_train_only",
+  "preprocessing": {
+    "order": "split -> select_features(train) -> fit_preproc(train) -> apply(test)",
+    "outlier_clipping": "1st/99th percentile (fit on TRAIN)",
+    "clip_bounds": {
+      "time_span": {
+        "p1": 17.057540000000735,
+        "p99": 393.23860800000153
+      },
+      "decline_time": {
+        "p1": 3.960199999996403,
+        "p99": 377.75288799999987
+      },
+      "mag_max": {
+        "p1": -5.850891974121627,
+        "p99": -1.048035375948721
+      }
+    },
+    "log_transformed_features": [],
+    "log_shifts_train": {},
+    "scaling": "StandardScaler inside LR pipeline; RF/CatBoost use raw preprocessed features"
+  },
+  "models": {
+    "Logistic Regression": {
+      "accuracy": 0.641860465116279,
+      "balanced_accuracy": 0.6430735930735931,
+      "auc": 0.6779220779220778,
+      "confusion_matrix": [
+        [
+          65,
+          45
+        ],
+        [
+          32,
+          73
+        ]
+      ],
+      "tn_fp_fn_tp": {
+        "tn": 65,
+        "fp": 45,
+        "fn": 32,
+        "tp": 73
+      }
+    },
+    "Random Forest": {
+      "accuracy": 0.6046511627906976,
+      "balanced_accuracy": 0.6051948051948052,
+      "auc": 0.6298268398268398,
+      "confusion_matrix": [
+        [
+          64,
+          46
+        ],
+        [
+          39,
+          66
+        ]
+      ],
+      "tn_fp_fn_tp": {
+        "tn": 64,
+        "fp": 46,
+        "fn": 39,
+        "tp": 66
+      }
+    },
+    "CatBoost": {
+      "accuracy": 0.5906976744186047,
+      "balanced_accuracy": 0.5911255411255412,
+      "auc": 0.6336796536796537,
+      "confusion_matrix": [
+        [
+          63,
+          47
+        ],
+        [
+          41,
+          64
+        ]
+      ],
+      "tn_fp_fn_tp": {
+        "tn": 63,
+        "fp": 47,
+        "fn": 41,
+        "tp": 64
+      }
+    },
+    "Ensemble": {
+      "accuracy": 0.6093023255813953,
+      "balanced_accuracy": 0.6095238095238096,
+      "auc": 0.6384415584415585,
+      "confusion_matrix": [
+        [
+          66,
+          44
+        ],
+        [
+          40,
+          65
+        ]
+      ],
+      "tn_fp_fn_tp": {
+        "tn": 66,
+        "fp": 44,
+        "fn": 40,
+        "tp": 65
+      }
+    }
+  }
+}
