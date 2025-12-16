@@ -1,5 +1,5 @@
 
-Systematic Comparison of Classical vs Near-Term Quantum Machine Learning for Astronomical Classification
+Quantum vs Classical Supernova Classification (PLAsTiCC) 
 
 🌌 Why This Project Exists
 
