@@ -1,8 +1,5 @@
 
-
 Systematic Comparison of Classical vs Near-Term Quantum Machine Learning for Astronomical Classification
-
-⸻
 
 🌌 Why This Project Exists
 
@@ -19,13 +16,12 @@ I completed IBM’s Basics of Quantum Information certification, strengthened my
 The Real-World Context
 
 Modern astronomical surveys operate at extreme scale:
-	•	Zwicky Transient Facility (ZTF): ~10,000 alerts per night
-	•	ALeRCE & ANTARES: Production ML systems using Random Forests, gradient boosting, and deep learning
-	•	Vera Rubin Observatory (LSST): Expected to generate ~10 million alerts per night
-	•	PLAsTiCC Challenge: Created by LSST scientists to benchmark ML approaches at this scale
+	•	Zwicky Transient Facility (ZTF): ~10,000 alerts/night
+	•	ALeRCE & ANTARES: production ML systems using Random Forests, gradient boosting, and deep learning
+	•	Vera Rubin Observatory (LSST): expected to generate ~10 million alerts/night
+	•	PLAsTiCC Challenge: created by LSST scientists to benchmark ML approaches at this scale
 
-Classical ML already works extremely well here.
-This project does not attempt to outperform professional astronomy pipelines.
+Classical ML already works extremely well here. This project does not attempt to outperform professional astronomy pipelines.
 
 ⸻
 
@@ -35,25 +31,38 @@ Instead, I asked a more fundamental question:
 
 Given that classical ML works well for astronomical transient classification, what would it take for quantum ML to be competitive?
 
-This is a technology-fit evaluation, not an astronomy optimization task.
-I used real PLAsTiCC data as a realistic testbed to understand where near-term quantum ML helps — and where it does not.
+This is a technology-fit evaluation, not an astronomy optimization task. I used real PLAsTiCC data as a realistic testbed to understand where near-term quantum ML helps—and where it does not.
 
 ⸻
 
-🧪 Methodology Overview
+🧪 Methodology Overview (What We Implemented Today)
 
-I implemented parallel, production-quality pipelines:
-	•	Classical ML
-	•	Logistic Regression
-	•	Random Forest
-	•	CatBoost
-	•	Soft-voting ensemble
-	•	Quantum ML
-	•	3-qubit variational quantum classifier
+I implemented parallel, consistent pipelines with leakage-safe evaluation:
+
+Classical ML (Baselines)
+	•	Logistic Regression (scaled)
+	•	Random Forest (raw)
+	•	CatBoost (raw)
+	•	Soft-voting ensemble (LR + RF + CatBoost)
+
+Quantum ML (Near-term QML)
+	•	3-qubit variational quantum classifier (VQC)
 	•	Qiskit EstimatorQNN
-	•	COBYLA optimizer
+	•	COBYLA optimizer (gradient-free)
+	•	StatevectorEstimator (V2 primitive) for noiseless simulation (no deprecation warnings)
 
-Both approaches were trained and evaluated on the same dataset, using consistent splits and metrics.
+✅ Leakage-Safe Design (Key Fix)
+
+To avoid unintentionally “peeking” at the test set, the final pipelines follow this order:
+
+split → select features (train only) → fit preprocessing (train only) → apply to test → train → evaluate
+
+This applies to:
+	•	correlation-based feature selection
+	•	outlier clipping (p1/p99)
+	•	conditional log transform
+	•	scaling (standardization or angle mapping)
+	•	threshold selection (done on train only for the quantum model)
 
 ⸻
 
@@ -63,135 +72,97 @@ Dataset: 1,072 PLAsTiCC transients
 	•	523 Type Ia (SNIa)
 	•	549 Type II (SNII)
 
-Approach	Model	Features	Accuracy	AUC	Training Time
-Classical	Ensemble (LR + RF + CatBoost)	16	74.4%	0.852	~2 min
-Quantum	3-qubit EstimatorQNN	3	50.2%	0.576	~10–11 min
-Baseline	Random guessing	–	50.0%	0.500	–
+Main Comparison (Realistic QML Constraint: 3 features / 3 qubits)
 
-Classical Performance
-	•	Random Forest: 75.8% accuracy
-	•	CatBoost: 74.4% accuracy
-	•	Logistic Regression: 71.2% accuracy
-	•	Ensemble: 74.4% accuracy, best AUC
+Approach	Model	Features	Accuracy	AUC	Notes
+Classical	Ensemble (LR+RF+CatBoost)	16	0.744	0.853	Best overall baseline
+Classical	Ensemble (LR+RF+CatBoost)	3	0.609	0.638	Apples-to-apples vs quantum
+Quantum	3-qubit EstimatorQNN	3	0.591	0.602	Threshold chosen on TRAIN
 
-Quantum Performance
-	•	Accuracy: 50.2%
-	•	AUC: 0.576
-	•	Sensitivity (SNIa recall): 87.6%
-	•	Specificity (SNII recall): 14.5%
-	•	Balanced accuracy: 51.1%
+Classical (16 features) breakdown
+	•	Logistic Regression: Accuracy 0.712, AUC 0.770
+	•	Random Forest: Accuracy 0.758, AUC 0.845
+	•	CatBoost: Accuracy 0.744, AUC 0.846
+	•	Ensemble: Accuracy 0.744, AUC 0.853
 
-Interpretation:
-The quantum model learned a strong bias toward predicting SNIa rather than a balanced discriminative boundary — a clear symptom of weak feature separability under tight qubit constraints.
+Quantum (3 qubits / 3 features) diagnostic metrics
+	•	Accuracy: 0.591
+	•	AUC: 0.602
+	•	Balanced accuracy: 0.594
+	•	Sensitivity (SNIa recall): 0.714
+	•	Specificity (SNII recall): 0.473
+	•	Decision threshold: 0.20 (selected from TRAIN to maximize balanced accuracy)
 
-⸻
+Confusion matrix (SNII, SNIa):
 
-🔬 Experimental Iteration & Model Diagnostics
-
-<details>
-<summary><b>Systematic experimentation, diagnostics, and limits analysis (click to expand)</b></summary>
-
-
-This project evolved through controlled, hypothesis-driven iterations to understand how near-term quantum ML behaves on real scientific data.
-
-Initial Baseline (600 samples)
-	•	Classical: ~75.0% accuracy
-	•	Quantum: ~47.5% accuracy
-	•	Gap: −27.5 pp
-
-Improvements Applied
-	•	Dataset scaling: 600 → 1,072 samples
-	•	Auto-selection of top 3 features via correlation analysis
-	•	Outlier-robust preprocessing (clipping + log transforms)
-	•	Quantum-specific scaling to [0, \pi]
-	•	Deeper circuit and more training iterations
-
-Final Outcome (1,072 samples)
-	•	Quantum accuracy improved slightly to ~50.2%
-	•	Classical performance remained stable
-	•	Performance plateaued despite tuning
-
-Why Performance Plateaued
-
-Feature analysis revealed a fundamental data limitation:
-
-Feature	Separation (σ)
-Best features	0.31–0.46σ
-Typical requirement for quantum ML	>0.5σ
-
-No amount of circuit depth or optimizer tuning can compensate for insufficient feature separability.
-
-Key takeaway:
-
-Quantum ML performance is primarily constrained by feature quality, not model complexity or dataset size alone.
-
-</details>
-
+[[52 58]
+ [30 75]]
 
 
 ⸻
 
-🔍 Root Cause Analysis: Feature Quality
+🔍 Root Cause Insight (Today’s Main Takeaway)
 
-Feature	Correlation	Separation (σ)
-time_span	0.280	0.46
-decline_time	0.269	0.44
-mag_max	0.151	0.31
-rise_decline_ratio	0.017	0.03
+The most important result wasn’t “quantum lost” or “quantum won.”
 
-Effective quantum learning typically requires >0.5σ separation per encoded feature.
-This dataset provides 0.03–0.46σ, explaining the observed performance ceiling.
+It was this:
 
-⸻
+When both classical and quantum models are restricted to the same 3 features, their performance becomes very close.
+The biggest drop happens when you compress 16 features → 3 features, not when you switch classical → quantum.
 
-⚛️ Why Classical Outperformed Quantum Here
+	•	Classical ensemble: 0.744 → 0.609 accuracy when forced to use only 3 features
+	•	Quantum QNN on the same 3 features: 0.591 accuracy
 
-Classical ensemble methods succeed because they:
-	•	Combine many weak signals across 16 dimensions
-	•	Learn flexible, non-linear decision boundaries
-	•	Compensate for poor individual features via ensemble voting
-
-Quantum ML struggled because it:
-	•	Is constrained to 3 features (3 qubits)
-	•	Requires strong individual feature signal
-	•	Suffers from weak gradients when features overlap
-
-This is not a failure of quantum computing — it is a problem–tool mismatch.
+Conclusion: the dominant bottleneck is information loss from feature compression (a practical NISQ constraint), not necessarily “quantum vs classical” in isolation.
 
 ⸻
 
-💡 Strategic Insight
+🧠 Feature Selection Used for Quantum (Train-Only)
+
+Because 3 qubits ≈ 3 input dimensions, features were selected automatically using point-biserial correlation computed on the training split only:
+
+Top 3 features (train-only):
+	•	time_span (|corr| ≈ 0.279)
+	•	decline_time (|corr| ≈ 0.266)
+	•	mag_max (|corr| ≈ 0.161)
+
+The same selected features were used for:
+	•	the quantum classifier
+	•	the classical Top-3 baseline (apples-to-apples)
+
+⸻
+
+⚛️ What This Suggests About Near-Term QML
 
 Quantum ML is not universally superior to classical ML.
 Knowing when not to use it is just as important as knowing how to implement it.
 
 Quantum ML is most promising when:
-	•	Feature separation is strong (>1σ)
-	•	Datasets are large (10k+ samples)
-	•	Problem structure is quantum-native
+	•	the problem naturally has a small number of high-signal features
+	•	feature separation is strong (often > 0.5σ per feature)
+	•	you can scale to more qubits / richer embeddings without collapsing trainability
+	•	there’s structure that might benefit from quantum representations (kernels / embeddings / physics structure)
 
 Classical ML remains optimal when:
-	•	Datasets are small to mid-sized
-	•	Features are weakly separable
-	•	The domain is mature and well-understood
+	•	performance comes from combining many weak signals across higher dimensions
+	•	ensembles and boosting can exploit feature interactions easily
+	•	you want mature, interpretable, production-ready workflows
 
 ⸻
 
 📂 Project Structure
 
-quantum-transient-detector_Real_Data/
+quantum-vs-classical-supernova-classification/
 ├── data/
-│   └── plasticc/                 # User-created directory
-│                                # Place raw PLAsTiCC data here
-│                                # Engineered features are also saved here
+│   └── plasticc/ User-created directory │ # Place raw PLAsTiCC data her
+│       
 ├── notebooks/
 │   ├── 00_explore_plasticc.ipynb
 │   ├── 01_feature_extraction.ipynb
 │   ├── 02_classical_ml.ipynb
 │   └── 03_quantum_classifier.ipynb
 ├── results/
-│   ├── plasticc_classical_results.json
-│   └── plasticc_quantum_results_final.json
+│   
 ├── README.md
 ├── requirements.txt
 └── LICENSE
@@ -208,8 +179,9 @@ To run the notebooks:
 	2.	Accept the PLAsTiCC-2018 competition terms
 	3.	Download the dataset from Kaggle
 	4.	Create data/plasticc/ and place the files there
+	5.	Run the feature extraction notebook to generate transient_features.csv
 
-This repository fully complies with Kaggle’s data-usage requirements.
+This repository complies with Kaggle’s data-usage requirements.
 
 ⸻
 
@@ -230,12 +202,13 @@ Senior Product Manager with hands-on experience in applied ML and quantum comput
 ⭐ Acknowledgments
 	•	IBM Quantum — Qiskit framework and educational resources
 	•	Anthropic & OpenAI — AI assistance for reasoning support, code review, and documentation
-	•	PLAsTiCC Organizers — Dataset creation
-	•	Kaggle — Hosting and infrastructure
-	•	Kaggle Community — Baselines and shared insights
+	•	PLAsTiCC Organizers — dataset creation
+	•	Kaggle — hosting and infrastructure
+	•	Kaggle Community — baselines and shared insights
 
 ⸻
 
 Built with quantum curiosity, classical rigor, and thoughtful AI assistance ⚛️🔭
 
 ⸻
+
