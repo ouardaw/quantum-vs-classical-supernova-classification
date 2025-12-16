@@ -10,8 +10,6 @@ From Childhood Wonder to Strategic Quantum Exploration
 
 My fascination with the cosmos began early—sparked by Hubert Reeves’ Poussière d’Étoiles and Carl Sagan’s Cosmos. Over the years, I pursued this curiosity relentlessly: reading about quantum field theory, many-worlds interpretation, black holes, dark matter, and M-theory; watching countless space documentaries; and learning from science communicators like Neil deGrasse Tyson, Janna Levin, Sean Carroll, and Brian Cox.
 
-One highlight was seeing Brian Cox’s live show on black holes in Washington, DC—an unforgettable experience that reinforced how powerful scientific storytelling can be.
-
 A New Obsession Emerges
 
 In recent years, I became equally fascinated by quantum computing—not as a buzzword, but as a fundamentally new computational paradigm with real (and very specific) potential. After more than 10 years in product management, I wanted to deepen my hands-on technical understanding of emerging technologies, not just their strategic implications.
