@@ -35,7 +35,7 @@ This is a technology-fit evaluation, not an astronomy optimization task. I used 
 
 ⸻
 
-🧪 Methodology Overview (What We Implemented Today)
+🧪 Methodology Overview 
 
 I implemented parallel, consistent pipelines with leakage-safe evaluation:
 
@@ -101,7 +101,7 @@ Confusion matrix (SNII, SNIa):
 
 ⸻
 
-🔍 Root Cause Insight (Today’s Main Takeaway)
+🔍 Root Cause Insight 
 
 The most important result wasn’t “quantum lost” or “quantum won.”
 
@@ -188,7 +188,7 @@ This repository complies with Kaggle’s data-usage requirements.
 👤 Author
 
 Ouarda Wilson
-Senior Product Manager with hands-on experience in applied ML and quantum computing
+Senior Product Manager
 	•	10+ years delivering complex technical products
 	•	Background in AI/ML systems and data-driven decision making
 	•	Practical quantum computing experience with Qiskit
@@ -203,7 +203,6 @@ Senior Product Manager with hands-on experience in applied ML and quantum comput
 	•	IBM Quantum — Qiskit framework and educational resources
 	•	Anthropic & OpenAI — AI assistance for reasoning support, code review, and documentation
 	•	PLAsTiCC Organizers — dataset creation
-	•	Kaggle — hosting and infrastructure
 	•	Kaggle Community — baselines and shared insights
 
 ⸻
