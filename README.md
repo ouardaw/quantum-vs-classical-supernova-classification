@@ -51,7 +51,7 @@ Quantum ML (Near-term QML)
 	•	COBYLA optimizer (gradient-free)
 	•	StatevectorEstimator (V2 primitive) for noiseless simulation (no deprecation warnings)
 
-✅ Leakage-Safe Design (Key Fix)
+✅ Leakage-Safe Design 
 
 To avoid unintentionally “peeking” at the test set, the final pipelines follow this order:
 
@@ -66,7 +66,7 @@ This applies to:
 
 ⸻
 
-📊 Results Summary (Updated)
+📊 Results Summary
 
 Dataset: 1,072 PLAsTiCC transients
 	•	523 Type Ia (SNIa)
